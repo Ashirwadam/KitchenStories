@@ -3,7 +3,9 @@ package com.kitchen.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -15,7 +17,6 @@ public class Recipe {
     private String image;
     private String name;
     private int ratings;
-    private String chefId;
     @Column(length = 10000)
     private String description;
     private String difficulty;
@@ -32,5 +33,17 @@ public class Recipe {
     private List<Ingredients> ingredients;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Steps> steps;
+
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "recipe_tags",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id"))
+    private Set<Tag> tags = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(name = "recipe_chef",
+            joinColumns = @JoinColumn(name = "recipe_id"),
+            inverseJoinColumns = @JoinColumn(name = "chef_id"))
+    private Chef chef;
 
 }
